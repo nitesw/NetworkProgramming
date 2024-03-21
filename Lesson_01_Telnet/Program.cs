@@ -30,10 +30,10 @@ namespace Lesson_01_Telnet
                 Console.WriteLine($"Data sent: {buffer}");
 
                 string receivedData = Encoding.ASCII.GetString(buffer, 0, numberOfReceivedBytes);
-                Console.WriteLine($"Command from client {receivedData}");
+                Console.WriteLine($"Command from client: {receivedData}");
                 client.Send(buffer);
 
-                if(receivedData == "0")
+                if(receivedData == "<EXIT>")
                 {
                     break;
                 }

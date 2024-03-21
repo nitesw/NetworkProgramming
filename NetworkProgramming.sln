@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lesson_01_Telnet", "Lesson_01_Telnet\Lesson_01_Telnet.csproj", "{A2FBEEFC-B8B9-46FE-9AA6-318248B7017B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lesson_01_Telnet", "Lesson_01_Telnet\Lesson_01_Telnet.csproj", "{A2FBEEFC-B8B9-46FE-9AA6-318248B7017B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lesson_01_Telnet_01", "Lesson_01_Telnet_01\Lesson_01_Telnet_01.csproj", "{20DA6F6B-2592-48C3-93C3-FDE512508507}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lesson_01_Telnet_01", "Lesson_01_Telnet_01\Lesson_01_Telnet_01.csproj", "{20DA6F6B-2592-48C3-93C3-FDE512508507}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lesson_02_TCP", "Lesson_02_TCP\Lesson_02_TCP.csproj", "{55871541-C3E1-405C-8C80-8C6DECF39B55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lesson_02_TCP_01", "Lesson_02_TCP_01\Lesson_02_TCP_01.csproj", "{15D6DE59-C8CE-4D53-B43A-11C7FE2CB46D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{20DA6F6B-2592-48C3-93C3-FDE512508507}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20DA6F6B-2592-48C3-93C3-FDE512508507}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20DA6F6B-2592-48C3-93C3-FDE512508507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55871541-C3E1-405C-8C80-8C6DECF39B55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55871541-C3E1-405C-8C80-8C6DECF39B55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55871541-C3E1-405C-8C80-8C6DECF39B55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55871541-C3E1-405C-8C80-8C6DECF39B55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15D6DE59-C8CE-4D53-B43A-11C7FE2CB46D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15D6DE59-C8CE-4D53-B43A-11C7FE2CB46D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15D6DE59-C8CE-4D53-B43A-11C7FE2CB46D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15D6DE59-C8CE-4D53-B43A-11C7FE2CB46D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

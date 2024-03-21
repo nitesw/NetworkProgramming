@@ -31,33 +31,39 @@ namespace Lesson_01_Telnet_01
                 Console.WriteLine($"Number of received bytes: {numberOfReceivedBytes}");
                 Console.WriteLine($"Data sent: {buffer}");
 
-                string receivedData = Encoding.ASCII.GetString(buffer, 0, numberOfReceivedBytes).Trim();
-                receivedData = receivedData.Replace("\r", "").Replace("\n", "");
-                Console.WriteLine($"Command from client {receivedData}");
+                //string receivedData = Encoding.ASCII.GetString(buffer, 0, numberOfReceivedBytes).Trim();
+                string receivedData = Encoding.ASCII.GetString(buffer, 0, numberOfReceivedBytes);
+                //receivedData = receivedData.Replace("\r", "").Replace("\n", "");
+                Console.WriteLine($"Command from client: {receivedData}");
                 client.Send(buffer);
 
-                if (receivedData != "0")
-                {
-                    stringBuilder.Append(receivedData);
-                }
-                else if (receivedData == "0")
+                if (receivedData == "<BREAK>")
                 {
                     break;
                 }
-
+                if (receivedData != "<LAUNCH>")
+                {
+                    stringBuilder.Append(receivedData);
+                }
+                else if (receivedData == "<LAUNCH>")
+                {
+                    try
+                    {
+                        stringBuilder.Append(".exe");
+                        string program = stringBuilder.ToString();
+                        Process process = Process.Start(program);
+                        stringBuilder = new StringBuilder();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                
                 Array.Clear(buffer, 0, buffer.Length);
                 numberOfReceivedBytes = 0;
             }
-            try
-            {
-                stringBuilder.Append(".exe");
-                string program = stringBuilder.ToString();
-                Process process = Process.Start(program);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            
         }
     }
 }
