@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using OpenAI_API;
+using OpenAI_API.Models;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -10,57 +12,47 @@ namespace Lesson_02_TCP_01
     {
         static List<User> users = new List<User>();
         static string[] quotes = new string[100];
+        static List<string> connectedUsers = new List<string>();
 
-        static void SaveLogsToFile()
+        static async Task SaveLogsToFile()
         {
             try
             {
-                string json = JsonSerializer.Serialize(users);
-
-                File.WriteAllText("Logs.json", json);
+                using (FileStream file = new FileStream("Logs.json", FileMode.OpenOrCreate))
+                {
+                    await JsonSerializer.SerializeAsync(file, users);
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-        static void InitQuotes()
+
+        static async Task InitQuotes()
         {
+            
+            
             for (int i = 0; i < quotes.Length; i++)
             {
                 quotes[i] = "Quote " + (i + 1);
             }
         }
-
-        static void Main(string[] args)
+        static async Task ConnectClient(Socket client)
         {
-            Socket socketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPAddress ipaddr = IPAddress.Any;
-            IPEndPoint port = new IPEndPoint(ipaddr, 8080);
-            bool clientConnected = true;
-            InitQuotes();
-
-            socketListener.Bind(port);
-            socketListener.Listen(5);
-
-            Console.WriteLine("Server has been started...");
-
-            Socket client = socketListener.Accept();
-            Console.WriteLine($"New client has been connected... {client.ToString()} IP: {client.RemoteEndPoint.ToString()}");
-
             try
             {
-                users.Add(new User() { ConnectionTime = DateTime.Now, IPv4Address = client.RemoteEndPoint.ToString() });
+                bool connected = true;
+                string clientEndPoint = client.RemoteEndPoint.ToString();
+                users.Add(new User() { ConnectionTime = DateTime.Now, IPv4Address = clientEndPoint });
+                connectedUsers.Add(clientEndPoint);
+
                 byte[] buffer = new byte[1024];
                 int numberOfReceivedBytes = 0;
 
-                while (clientConnected)
+                while (connected)
                 {
-                    string clientEndPoint = client.RemoteEndPoint.ToString();
-
-
-
-                    numberOfReceivedBytes = client.Receive(buffer);
+                    numberOfReceivedBytes = await client.ReceiveAsync(buffer);
                     Console.WriteLine($"Number of received bytes: {numberOfReceivedBytes}");
                     Console.WriteLine($"Data sent: {buffer}");
 
@@ -77,34 +69,64 @@ namespace Lesson_02_TCP_01
                                 break;
                             }
                         }
-                        clientConnected = false;
+                        connectedUsers.Remove(clientEndPoint);
+                        connected = false;
                     }
                     else if (receivedData.Equals("<BREAK>"))
                     {
-                        clientConnected = false;
+                        break;
                     }
                     else if (receivedData.Equals("<GET>"))
                     {
                         int rnd = new Random().Next(quotes.Count());
                         foreach (var user in users)
                         {
-                            if(user.IPv4Address == client.RemoteEndPoint.ToString())
+                            if (user.IPv4Address == client.RemoteEndPoint.ToString())
                             {
                                 user.Quotes.Add(quotes[rnd]);
                                 break;
                             }
                         }
-                        client.Send(Encoding.ASCII.GetBytes(quotes[rnd]));
+                        await client.SendAsync(Encoding.ASCII.GetBytes(quotes[rnd]));
                     }
 
                     Array.Clear(buffer, 0, buffer.Length);
                     numberOfReceivedBytes = 0;
                 }
-                SaveLogsToFile();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                await SaveLogsToFile();
+                client.Close();
+                client.Dispose();
+            }
+        }
+
+        static async Task Main(string[] args)
+        {
+            OpenAIAPI api = new OpenAIAPI("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");
+            var result = await api.Chat.CreateChatCompletionAsync("Hello!", Model.Davinci, max_tokens: 256);
+            Console.WriteLine(result);
+
+            Socket socketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPAddress ipaddr = IPAddress.Any;
+            IPEndPoint port = new IPEndPoint(ipaddr, 8080);
+            //await InitQuotes(chatGpt);
+            
+            socketListener.Bind(port);
+            socketListener.Listen(5);
+
+            Console.WriteLine("Server has been started...");
+
+            while (true)
+            {
+                Socket client = await socketListener.AcceptAsync();
+                Console.WriteLine($"New client has been connected... {client.ToString()} IP: {client.RemoteEndPoint.ToString()}");
+                Task task = Task.Run(() => ConnectClient(client));
             }
         }
     }
