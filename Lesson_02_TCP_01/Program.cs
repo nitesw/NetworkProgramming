@@ -31,8 +31,6 @@ namespace Lesson_02_TCP_01
 
         static async Task InitQuotes()
         {
-            
-            
             for (int i = 0; i < quotes.Length; i++)
             {
                 quotes[i] = "Quote " + (i + 1);
@@ -108,9 +106,9 @@ namespace Lesson_02_TCP_01
 
         static async Task Main(string[] args)
         {
-            OpenAIAPI api = new OpenAIAPI("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");
-            var result = await api.Chat.CreateChatCompletionAsync("Hello!", Model.Davinci, max_tokens: 256);
-            Console.WriteLine(result);
+            //OpenAIAPI api = new OpenAIAPI("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");
+            //var result = await api.Chat.CreateChatCompletionAsync("Hello!", Model.Davinci, max_tokens: 256);
+            //Console.WriteLine(result);
 
             Socket socketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress ipaddr = IPAddress.Any;
